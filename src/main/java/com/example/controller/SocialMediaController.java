@@ -2,7 +2,9 @@ package com.example.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +56,8 @@ public class SocialMediaController {
     }
 
     // Get all existing messages
-    @ResponseBody
     @GetMapping("messages")
-    public ResponseEntity<List<Message>> getAllMessages(Message message) {
+    public ResponseEntity<List<Message>> getAllMessages() {
         // Create a list of messages that we populate using messageService 
         List<Message> allMessages = messageService.getAllMessages();
         // Return the ResponseEntity and list with a status code of 200 (OK)
@@ -67,7 +68,15 @@ public class SocialMediaController {
     // Retrieve a message by its ID
     @GetMapping("messages/{messageId}")
     public ResponseEntity<Message> getMessageById(@PathVariable Integer messageId) {
-        
+        // Search for the message by id and set it to messageById
+        Optional<Message> messageById = messageService.getMessageById(messageId);
+
+        // If the message is null i.e does not exist, return status code 404
+        if (!messageById.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        // Otherwise, return messageById
+        return ResponseEntity.ok(messageById.get());
     }
 
     // Delete a message by its ID
