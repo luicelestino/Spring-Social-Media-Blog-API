@@ -30,7 +30,17 @@ public class MessageService {
     // Handles HTTP GET requests sent to /messages/{messageId}
     // Returns the message with the matching id
     public Optional<Message> getMessageById(Integer messageId) {
-        return messageRepository.findById(messageId);
+        // Searches for the message by id
+        Optional<Message> message = messageRepository.findById(messageId);
+
+        // If message was found, return that message
+        // Else, return an empty optional because there was no message in the first place
+        if (message.isPresent()) {
+            return message;
+        } else {
+            return Optional.empty();
+        }
+
     }
 
     // Handles HTTP DELETE requests sent to /messages/{messageId}
@@ -41,7 +51,7 @@ public class MessageService {
         Optional<Message> message = messageRepository.findById(messageId);
 
         // If message was found, delete the message and return that message
-        // Else if no message was found, return an empty optional because there is no message in the first place
+        // Else if no message was found, return an empty optional because there was no message in the first place
         if (message.isPresent()) {
             messageRepository.deleteById(messageId);
             return message;
