@@ -85,9 +85,9 @@ public class SocialMediaController {
 
     }
 
-    // Update a message by its ID
+    // Patch a message by its ID
     @PatchMapping("messages/{messageId}")
-    public ResponseEntity<Message> updateMessageById(@PathVariable Integer messageId) {
+    public ResponseEntity<Message> patcheMessageById(@PathVariable Integer messageId, @RequestBody String messageText) {
 
     }
 
