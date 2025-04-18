@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
@@ -117,8 +119,15 @@ public class SocialMediaController {
     }
 
     // Patch a message by its ID
+    // Because the JSON object is not guaranteed to only contain the new message text, we map it to a Map object
+    // We then extract the messageText value from the Map to get the new message text from the request body
     @PatchMapping("messages/{messageId}")
-    public ResponseEntity<?> patcheMessageById(@PathVariable Integer messageId, @RequestBody String messageNewText) {
+    public ResponseEntity<?> patcheMessageById(@PathVariable Integer messageId, @RequestBody Map<String, Object> requestBody) {
+
+        // Get the messageText value from the JSON request body
+        // Cast it to string
+        String messageNewText = (String) requestBody.get("messageText");
+
         Optional<Message> patchedMessage = messageService.patchMessageById(messageId, messageNewText);
 
         if (patchedMessage.isPresent()) {
