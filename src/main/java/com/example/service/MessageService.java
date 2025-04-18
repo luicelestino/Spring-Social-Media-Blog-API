@@ -1,6 +1,5 @@
 package com.example.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,10 +22,18 @@ public class MessageService {
 
     // Handles HTTP POST requests sent to messages
     // Creates a new message
-    public void addNewMessage(Message newMessage) {
+    public Optional<Message> addNewMessage(Message newMessage) {
+        // If newMessage text is not null and text is no longer than 255 characters and the postedBy exists, save the message
         if (newMessage.getMessageText() != null && newMessage.getMessageText().length() <= 255 && messageRepository.existsByAccountId(newMessage.getPostedBy())) {
-            messageRepository.save(newMessage);
+            Message savedMessage = messageRepository.save(newMessage);
+            // Returns the savedMessage which is set to the newMessage parameter as an optional
+            // If it exists return the saved message
+            // Else, return an empty optional
+            return Optional.of(savedMessage);
+        } else {
+            return Optional.empty();
         }
+        
     }
 
     // Handles HTTP GET requests sent to /messages
@@ -76,7 +83,7 @@ public class MessageService {
 
         // If message was found, update the message and return that message
         // Else if no message was found, return an empty optional because there was no message in the first place
-        if (message.isPresent()) {
+        if (message.isPresent() && messageText != null && messageText.length() <= 255) {
             Message newMessage = message.get();
             newMessage.setMessageText(messageText);
             messageRepository.save(newMessage);
@@ -88,15 +95,11 @@ public class MessageService {
 
     // Handles HTTP GET requests sent to /accounts/{accountId}/messages
     // Returns the list of messages from this account
-    public Optional<List<Message>> getMessagesByAccountId(Integer accountId) {
+    public List<Message> getMessagesByAccountId(Integer accountId) {
 
         // Searches for messages from a specific account
-        Optional<List<Message>> messages = messageRepository.findMessageByAccountId(accountId);
+        List<Message> messages = messageRepository.findMessageByAccountId(accountId);
 
-        if (messages.isPresent()) {
-            return messages;
-        } else {
-            return Optional.empty();
-        }
+        return messages;
     }
 }
