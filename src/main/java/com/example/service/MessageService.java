@@ -24,7 +24,7 @@ public class MessageService {
     // Creates a new message
     public Optional<Message> addNewMessage(Message newMessage) {
         // If newMessage text is not null and text is no longer than 255 characters and the postedBy exists, save the message
-        if (newMessage.getMessageText() != null && newMessage.getMessageText().length() <= 255 && messageRepository.existsByAccountId(newMessage.getPostedBy())) {
+        if (newMessage.getMessageText() != null && newMessage.getMessageText().length() <= 255 && messageRepository.existsByPostedBy(newMessage.getPostedBy())) {
             Message savedMessage = messageRepository.save(newMessage);
             // Returns the savedMessage which is set to the newMessage parameter as an optional
             // If it exists return the saved message
@@ -98,7 +98,7 @@ public class MessageService {
     public List<Message> getMessagesByAccountId(Integer accountId) {
 
         // Searches for messages from a specific account
-        List<Message> messages = messageRepository.findMessageByAccountId(accountId);
+        List<Message> messages = messageRepository.findMessageByPostedBy(accountId);
 
         return messages;
     }

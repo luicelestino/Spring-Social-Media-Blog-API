@@ -25,7 +25,7 @@ public class AccountService {
         //      then the account can be registered
         // Should return JSON of account
         if (newAccount.getUsername() != null && newAccount.getPassword().length() >= 4 
-            && !accountRepository.accountUsernameExists(newAccount.getUsername())) {
+            && !accountRepository.existsByUsername(newAccount.getUsername())) {
                 Account registeredAccount = accountRepository.save(newAccount);
                 return Optional.of(registeredAccount);
         } else {

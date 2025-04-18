@@ -50,7 +50,7 @@ public class SocialMediaController {
 
         if (registeredAccount.isPresent()) {
             return ResponseEntity.ok(registeredAccount.get());
-        } else if (accountRepository.accountUsernameExists(newAccount.getUsername())){
+        } else if (accountRepository.existsByUsername(newAccount.getUsername())){
             return ResponseEntity.status(209).body("Username already exists");
         } else {
             return ResponseEntity.badRequest().body("Account could not be registered");

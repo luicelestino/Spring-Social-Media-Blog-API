@@ -10,7 +10,7 @@ import com.example.entity.Message;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer> {
     
-    List<Message> findMessageByAccountId(Integer accountId);
+    List<Message> findMessageByPostedBy(Integer postedBy);
     
-    Boolean existsByAccountId(Integer accountId);
+    Boolean existsByPostedBy(Integer postedBy);
 }
