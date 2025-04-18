@@ -51,7 +51,7 @@ public class SocialMediaController {
         if (registeredAccount.isPresent()) {
             return ResponseEntity.ok(registeredAccount.get());
         } else if (accountRepository.existsByUsername(newAccount.getUsername())){
-            return ResponseEntity.status(209).body("Username already exists");
+            return ResponseEntity.status(409).body("Username already exists");
         } else {
             return ResponseEntity.badRequest().body("Account could not be registered");
         }
@@ -118,8 +118,8 @@ public class SocialMediaController {
 
     // Patch a message by its ID
     @PatchMapping("messages/{messageId}")
-    public ResponseEntity<?> patcheMessageById(@PathVariable Integer messageId, @RequestBody String messageText) {
-        Optional<Message> patchedMessage = messageService.patchMessageById(messageId, messageText);
+    public ResponseEntity<?> patcheMessageById(@PathVariable Integer messageId, @RequestBody String messageNewText) {
+        Optional<Message> patchedMessage = messageService.patchMessageById(messageId, messageNewText);
 
         if (patchedMessage.isPresent()) {
             return ResponseEntity.ok().body(1);
@@ -129,7 +129,7 @@ public class SocialMediaController {
     }
 
     // Get all messages written by a specific account by its ID
-    @GetMapping("accounts/{accountId}")
+    @GetMapping("accounts/{accountId}/messages")
     public ResponseEntity<List<Message>> getAllMessagesByAccount(@PathVariable Integer accountId) {
         List<Message> accountMessages = messageService.getMessagesByAccountId(accountId);
 

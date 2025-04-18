@@ -24,7 +24,8 @@ public class MessageService {
     // Creates a new message
     public Optional<Message> addNewMessage(Message newMessage) {
         // If newMessage text is not null and text is no longer than 255 characters and the postedBy exists, save the message
-        if (newMessage.getMessageText() != null && newMessage.getMessageText().length() <= 255 && messageRepository.existsByPostedBy(newMessage.getPostedBy())) {
+        if (newMessage.getMessageText() != null && newMessage.getMessageText().length() <= 255 && newMessage.getMessageText() != ""
+            && messageRepository.existsByPostedBy(newMessage.getPostedBy())) {
             Message savedMessage = messageRepository.save(newMessage);
             // Returns the savedMessage which is set to the newMessage parameter as an optional
             // If it exists return the saved message
@@ -76,16 +77,21 @@ public class MessageService {
 
     // Handles HTTP PATCH requests sent to /message/{messageId}
     // Returns the updated message
-    public Optional<Message> patchMessageById(Integer messageId, String messageText) {
+    public Optional<Message> patchMessageById(Integer messageId, String messageNewText) {
         
         // Searches for the message to be patched by id
         Optional<Message> message = messageRepository.findById(messageId);
 
+        // If message text is empty (or only whitespace), return Optional.empty()
+        if (messageNewText == null || messageNewText.trim().isEmpty()) {
+            return Optional.empty();
+        }
+
         // If message was found, update the message and return that message
         // Else if no message was found, return an empty optional because there was no message in the first place
-        if (message.isPresent() && messageText != null && messageText.length() <= 255) {
+        if (message.isPresent() && messageNewText.length() <= 255) {
             Message newMessage = message.get();
-            newMessage.setMessageText(messageText);
+            newMessage.setMessageText(messageNewText);
             messageRepository.save(newMessage);
             return Optional.of(newMessage);
         } else {
